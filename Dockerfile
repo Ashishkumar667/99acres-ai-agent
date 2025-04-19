@@ -1,48 +1,42 @@
-# Use the official Node.js image as the base image
-FROM node:20
-
-# Set the working directory inside the container
-WORKDIR /app
-
-# Copy package.json and package-lock.json
-COPY package.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application
-COPY . .
+# Use Node.js base image
+FROM node:20-slim
 
 # Install necessary dependencies for Puppeteer
 RUN apt-get update && apt-get install -y \
     wget \
-    curl \
-    unzip \
+    ca-certificates \
     fonts-liberation \
     libappindicator3-1 \
     libasound2 \
+    libatk-bridge2.0-0 \
     libatk1.0-0 \
     libcups2 \
     libdbus-1-3 \
-    libexpat1 \
-    libgbm-dev \
-    libgtk-3-0 \
+    libgdk-pixbuf2.0-0 \
     libnspr4 \
     libnss3 \
     libx11-xcb1 \
     libxcomposite1 \
-    libxcursor1 \
     libxdamage1 \
-    libxfixes3 \
-    libxi6 \
     libxrandr2 \
-    libxss1 \
-    libxtst6 \
-    fonts-noto-color-emoji \
-    && rm -rf /var/lib/apt/lists/*
+    xdg-utils \
+    libu2f-udev \
+    libvulkan1 \
+    --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
 
-# Expose port 3000 for the service
+# Set working directory
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Expose port
 EXPOSE 4000
 
-# Start the server
-CMD ["node", "server.js"]
+# Start the app
+CMD ["npm", "server.js"]
