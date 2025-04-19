@@ -39,4 +39,4 @@ COPY . .
 EXPOSE 4000
 
 # Start the app
-CMD ["npm", "server.js"]
+CMD ["node", "server.js"]
